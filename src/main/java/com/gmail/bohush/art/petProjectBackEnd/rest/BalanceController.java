@@ -2,9 +2,7 @@ package com.gmail.bohush.art.petProjectBackEnd.rest;
 
 import com.gmail.bohush.art.petProjectBackEnd.dto.UserDto;
 import com.gmail.bohush.art.petProjectBackEnd.entity.User;
-import com.gmail.bohush.art.petProjectBackEnd.security.JwtDecoder;
 import com.gmail.bohush.art.petProjectBackEnd.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +23,7 @@ public class BalanceController {
 
     @GetMapping("/getCurrent")
     private ResponseEntity getCurrentBalance(@RequestHeader(value="authorization") String token) {
-        String email = JwtDecoder.decodeJWT(token);
-        User user = userService.findByEmail(email);
+        User user = userService.getByToken(token);
         Map<Object, Object> response = new HashMap<>();
         response.put("balance", user.getBalance());
 
@@ -35,8 +32,7 @@ public class BalanceController {
 
     @PutMapping("/setBalance")
     private HttpStatus setNewBalance(@RequestHeader(value="authorization") String token, @RequestBody UserDto userDto) {
-        String email = JwtDecoder.decodeJWT(token);
-        User user = userService.findByEmail(email);
+        User user = userService.getByToken(token);
         user.setBalance(userDto.getBalance());
         userService.save(user);
 

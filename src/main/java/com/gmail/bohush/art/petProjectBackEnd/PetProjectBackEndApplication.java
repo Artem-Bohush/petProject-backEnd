@@ -1,9 +1,15 @@
 package com.gmail.bohush.art.petProjectBackEnd;
 
+import com.gmail.bohush.art.petProjectBackEnd.entity.*;
+import com.gmail.bohush.art.petProjectBackEnd.service.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @SpringBootApplication
 public class PetProjectBackEndApplication {
@@ -12,66 +18,77 @@ public class PetProjectBackEndApplication {
 		SpringApplication.run(PetProjectBackEndApplication.class, args);
 	}
 
-//	@Bean
-//	public CommandLineRunner demo(final GeneralService generalService) {
-//		return new CommandLineRunner() {
-//			@Override
-//			public void run(String... strings) throws Exception {
-//
-//				UserRole admin = new UserRole("admin");
-//				generalService.addUserRole(admin);
-//				UserRole user = new UserRole("user");
-//				generalService.addUserRole(user);
+	@Bean
+	public CommandLineRunner demo(final UserService userService, final RoleService roleService,
+								  final RecordService recordService, final RecordTypeService recordTypeService,
+								  final CategoryService categoryService) {
+		return new CommandLineRunner() {
+			@Override
+			public void run(String... strings) throws Exception {
+				Role adminRole = new Role("ROLE_ADMIN");
+				roleService.save(adminRole);
+				Role userRole = new Role("ROLE_USER");
+				roleService.save(userRole);
 
-//                CategoryType income = new CategoryType("income");
-//                generalService.addCategoryType(income);
-//                CategoryType expense = new CategoryType("expense");
-//                generalService.addCategoryType(expense);
-//
-//                RecordType incomeRec = new RecordType("income");
-//                generalService.addRecordType(incomeRec);
-//                RecordType expenseRec = new RecordType("expense");
-//                generalService.addRecordType(expenseRec);
-//                RecordType planningRec = new RecordType("planning");
-//                generalService.addRecordType(planningRec);
+				User admin = new User();
+				admin.setEmail("admin@gmail.com");
+				admin.setPassword("$2a$10$LWW9BvyNeE1/Y7MbFQes0uXY6BBqJj5Rbck7hJfwPNS127WVsQ4gi");
+				admin.setUsername("Artem");
+				admin.setBalance("7777.77");
+				admin.setCreated(new Date());
+				admin.setUpdated(new Date());
+				admin.setStatus(Status.ACTIVE);
 
-//				CustomUser cu = new CustomUser(admin, "art.bohush@gmail.com", "kalka1223",
-//						"Artem", "0.00");
-//				generalService.addCustomUser(cu);
-//                cu = new CustomUser(admin, "art.bohush@gmail.com", "kalka1223",
-//                        "Artem", "0.00");
-//                generalService.addCustomUser(cu);
-//				for (int i = 1; i < 11; i++) {
-//					cu = new CustomUser(user, "email@gmail.com" + i, "password" + i,
-//							"Name" + i, "0.00");
-//					generalService.addCustomUser(cu);
-//				}
+				List<Role> roles = new ArrayList<>();
+				roles.add(roleService.findByName("ROLE_ADMIN"));
+				roles.add(roleService.findByName("ROLE_USER"));
+				admin.setRoles(roles);
 
-//                Category c;
-//                Category c1 = new Category(income, "ForTest", "dsfs");
-//                generalService.addCategory(c1);
-//                for (int i = 1; i < 5; i++) {
-//                    if(i % 2 == 0) {
-//                        c = new Category(income, "Category" + i, null);
-//                    } else {
-//                        c = new Category(expense, "Category" + i, "5000");
-//                    }
-//                    generalService.addCategory(c);
-//                }
-//
-//                Record r;
-//                for (int i = 1; i < 21; i++) {
-//                    if (i % 2 == 0) {
-//                        r = new Record(cu, incomeRec, c1, "some descr", "100500", "today");
-//                    } else if (i == 5 || i == 11 || i == 19) {
-//                        r = new Record(cu, expenseRec, c1, "some descr", "100500", "today");
-//                    } else {
-//                        r = new Record(cu, planningRec, c1, "some descr", "100500", "today");
-//                    }
-//                    generalService.addRecord(r);
-//                }
-//			}
-//		};
-//	}
+				List<Category> categories = new ArrayList<>();
+				categories.add(new Category("Eда", "2500", admin));
+				categories.add(new Category("Жилье", "8000", admin));
+				categories.add(new Category("Машина", "5000", admin));
+				admin.setCategories(categories);
+				userService.save(admin);
+
+				User user = new User();
+				user.setEmail("user@gmail.com");
+				user.setPassword("$2a$10$7nf7G945OnoXMjUWBqkG/eZ6pS/IX7VALdcj547XNC3KiVVBmvdaG");
+				user.setUsername("Alex");
+				user.setBalance("1188.55");
+				user.setCreated(new Date());
+				user.setUpdated(new Date());
+				user.setStatus(Status.ACTIVE);
+
+				List<Role> roles1 = new ArrayList<>();
+				roles1.add(roleService.findByName("ROLE_USER"));
+				user.setRoles(roles1);
+
+				List<Category> categories1 = new ArrayList<>();
+				categories1.add(new Category("Eда", "2500", user));
+				categories1.add(new Category("Жилье", "8000", user));
+				categories1.add(new Category("Машина", "5000", user));
+				user.setCategories(categories1);
+				userService.save(user);
+
+				RecordType income = new RecordType("income");
+				recordTypeService.save(income);
+				RecordType outcome = new RecordType("outcome");
+				recordTypeService.save(outcome);
+				RecordType planning = new RecordType("planning");
+				recordTypeService.save(planning);
+
+				Record record = new Record();
+				record.setDescription("incomeRecord");
+				record.setSum("1550");
+				record.setPlanningDate(null);
+				record.setCreated(new Date());
+				record.setType(recordTypeService.findByName("income"));
+				record.setCategory(categoryService.findById((long) 4));
+				record.setUser(user);
+				recordService.save(record);
+			}
+		};
+	}
 
 }

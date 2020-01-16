@@ -14,6 +14,8 @@ public interface UserService {
 
     User findById(Long id);
 
+    User getByToken(String token);
+
     void save(User user);
 
     void delete(Long id);

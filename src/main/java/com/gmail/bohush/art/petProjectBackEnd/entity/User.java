@@ -50,4 +50,20 @@ public class User {
 
     @OneToMany(mappedBy="user", cascade=CascadeType.ALL)
     private List<Record> records;
+
+    @OneToMany(mappedBy="user", cascade=CascadeType.ALL)
+    private List<Category> categories;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", balance='" + balance + '\'' +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", status=" + status;
+    }
 }

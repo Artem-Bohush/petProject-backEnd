@@ -8,11 +8,15 @@ import com.gmail.bohush.art.petProjectBackEnd.repository.UserRepository;
 import com.gmail.bohush.art.petProjectBackEnd.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Base64;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -71,6 +75,23 @@ public class UserServiceImpl implements UserService {
 
         log.info("IN findById - user: {} found by id: {}", result);
         return result;
+    }
+
+    @Override
+    public User getByToken(String token) {
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        String[] parts = token.substring(7).split("\\.");
+        String payloadJson = new String(decoder.decode(parts[1]));
+        JsonParser springParser = JsonParserFactory.getJsonParser();
+        Map<String, Object> map = springParser.parseMap(payloadJson);
+        Object mapArray[] = new Object[map.size()];
+        int i = 0;
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            mapArray[i] = entry.getValue();
+            i++;
+        }
+        String email = (String) mapArray[0];
+        return findByEmail(email);
     }
 
     @Override

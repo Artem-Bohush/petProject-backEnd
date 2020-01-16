@@ -2,14 +2,12 @@ package com.gmail.bohush.art.petProjectBackEnd.rest;
 
 import com.gmail.bohush.art.petProjectBackEnd.dto.UserDto;
 import com.gmail.bohush.art.petProjectBackEnd.entity.User;
-import com.gmail.bohush.art.petProjectBackEnd.security.JwtDecoder;
 import com.gmail.bohush.art.petProjectBackEnd.security.jwt.JwtTokenProvider;
 import com.gmail.bohush.art.petProjectBackEnd.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,8 +35,7 @@ public class SettingsController {
 
     @PutMapping("/setEmail")
     private ResponseEntity setNewEmail(@RequestHeader(value="authorization") String token, @RequestBody UserDto userDto) {
-        String email = JwtDecoder.decodeJWT(token);
-        User user = userService.findByEmail(email);
+        User user = userService.getByToken(token);
         user.setEmail(userDto.getEmail());
         userService.save(user);
         String newToken = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
@@ -51,10 +48,10 @@ public class SettingsController {
 
     @PostMapping("/checkPassword")
     private ResponseEntity checkPassword(@RequestHeader(value="authorization") String token, @RequestBody UserDto userDto) {
-        String email = JwtDecoder.decodeJWT(token);
-        User user = userService.findByEmail(email);
+        User user = userService.getByToken(token);
         System.out.println(userDto.getPassword());
         System.out.println(bCryptPasswordEncoder.encode(userDto.getPassword()));
+
         if (bCryptPasswordEncoder.matches(userDto.getPassword(), user.getPassword())) {
             Map<Object, Object> response = new HashMap<>();
             response.put("isEqual", true);
@@ -68,8 +65,7 @@ public class SettingsController {
 
     @PutMapping("/setPassword")
     private HttpStatus setNewPassword(@RequestHeader(value="authorization") String token, @RequestBody UserDto userDto) {
-        String email = JwtDecoder.decodeJWT(token);
-        User user = userService.findByEmail(email);
+        User user = userService.getByToken(token);
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userService.save(user);
 
@@ -78,8 +74,7 @@ public class SettingsController {
 
     @PutMapping("/setUsername")
     private HttpStatus setNewUsername(@RequestHeader(value="authorization") String token, @RequestBody UserDto userDto) {
-        String email = JwtDecoder.decodeJWT(token);
-        User user = userService.findByEmail(email);
+        User user = userService.getByToken(token);
         user.setUsername(userDto.getUsername());
         userService.save(user);
 
@@ -88,8 +83,7 @@ public class SettingsController {
 
     @GetMapping("/getCurrentData")
     private ResponseEntity getCurrentUserData(@RequestHeader(value="authorization") String token) {
-        String email = JwtDecoder.decodeJWT(token);
-        User user = userService.findByEmail(email);
+        User user = userService.getByToken(token);
         Map<Object, Object> response = new HashMap<>();
         response.put("email", user.getEmail());
         response.put("username", user.getUsername());
