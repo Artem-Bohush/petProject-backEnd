@@ -4,10 +4,7 @@ import com.gmail.bohush.art.petProjectBackEnd.dto.CategoryDto;
 import com.gmail.bohush.art.petProjectBackEnd.dto.RecordDto;
 import com.gmail.bohush.art.petProjectBackEnd.dto.UserDto;
 import com.gmail.bohush.art.petProjectBackEnd.entity.*;
-import com.gmail.bohush.art.petProjectBackEnd.service.CategoryService;
-import com.gmail.bohush.art.petProjectBackEnd.service.RecordService;
-import com.gmail.bohush.art.petProjectBackEnd.service.RecordTypeService;
-import com.gmail.bohush.art.petProjectBackEnd.service.UserService;
+import com.gmail.bohush.art.petProjectBackEnd.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,14 +23,16 @@ public class RecordController {
     private final CategoryService categoryService;
     private final RecordService recordService;
     private final RecordTypeService recordTypeService;
+    private final ChartDataService chartDataService;
 
 
     public RecordController(UserService userService, CategoryService categoryService, RecordService recordService,
-                            RecordTypeService recordTypeService) {
+                            RecordTypeService recordTypeService, ChartDataService chartDataService) {
         this.userService = userService;
         this.categoryService = categoryService;
         this.recordService = recordService;
         this.recordTypeService = recordTypeService;
+        this.chartDataService = chartDataService;
     }
 
     @GetMapping("/getCategories")
@@ -52,9 +51,27 @@ public class RecordController {
         User user = userService.getByToken(token);
         Record record = RecordDto.toRecord(recordDto);
         record.setType(recordTypeService.findByName(recordDto.getType()));
-        record.setCategory(categoryService.findById(recordDto.getCategoryId()));
+        Category category = categoryService.findById(recordDto.getCategoryId());
+        record.setCategory(category);
         record.setUser(user);
         recordService.save(record);
+        if (record.getType().getName().equals("outcome")) {
+            ChartData chartData = category.getChartData();
+            if (chartData != null) {
+                chartData.setY(chartData.getY() + record.getSum());
+            } else {
+                chartData = new ChartData();
+                chartData.setLabel(record.getCategory().getName());
+                chartData.setY(record.getSum());
+                chartData.setCategory(category);
+            }
+            chartDataService.save(chartData);
+            user.setBalance(user.getBalance() - record.getSum());
+            userService.save(user);
+        } else if (record.getType().getName().equals("income")) {
+            user.setBalance(user.getBalance() + record.getSum());
+            userService.save(user);
+        }
         return HttpStatus.OK;
     }
 

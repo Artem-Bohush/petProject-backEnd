@@ -15,7 +15,7 @@ public class UserDto {
     private String email;
     private String password;
     private String username;
-    private String balance;
+    private double balance;
     private List<Role> roles;
     private List<Record> records;
 

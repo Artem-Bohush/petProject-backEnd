@@ -15,7 +15,7 @@ public class AdminUserDto {
     private String email;
     private String password;
     private String username;
-    private String balance;
+    private double balance;
     private String status;
 //    private List<Role> roles;
     private List<Record> records;

@@ -7,7 +7,7 @@ import lombok.Data;
 public class CategoryDto {
     private Long id;
     private String name;
-    private String lim;
+    private double lim;
 
     public static CategoryDto toCategoryDto(Category category) {
         CategoryDto categoryDto = new CategoryDto();

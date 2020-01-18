@@ -20,7 +20,7 @@ public class Record {
     private String description;
 
     @Column(name = "sum")
-    private String sum;
+    private double sum;
 
     @Column(name = "planning_date")
     private String planningDate;

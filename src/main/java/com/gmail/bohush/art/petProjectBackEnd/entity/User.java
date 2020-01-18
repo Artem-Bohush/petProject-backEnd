@@ -28,7 +28,7 @@ public class User {
     private String username;
 
     @Column(name = "balance")
-    private String balance;
+    private double balance;
 
     @CreatedDate
     @Column(name = "created")

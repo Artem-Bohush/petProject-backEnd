@@ -18,7 +18,7 @@ public class Category {
     private String name;
 
     @Column(name = "lim")
-    private String lim;
+    private double lim;
 
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -27,10 +27,14 @@ public class Category {
     @OneToMany(mappedBy="category", cascade=CascadeType.ALL)
     private List<Record> records;
 
+    @OneToOne(mappedBy = "category", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, optional = false)
+    private ChartData chartData;
+
     public Category() {
     }
 
-    public Category(String name, String lim, User user) {
+    public Category(String name, double lim, User user) {
         this.name = name;
         this.lim = lim;
         this.user = user;

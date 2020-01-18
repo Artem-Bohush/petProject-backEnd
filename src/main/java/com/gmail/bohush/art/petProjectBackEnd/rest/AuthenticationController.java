@@ -68,7 +68,7 @@ public class AuthenticationController {
     public HttpStatus signup(@RequestBody UserDto userDto) {
         User user  = userDto.toUser();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setBalance("0.00");
+        user.setBalance(0.00);
         user.setStatus(Status.ACTIVE);
         user.setCreated(new Date());
         user.setUpdated(new Date());
@@ -79,9 +79,9 @@ public class AuthenticationController {
         user.setRoles(roles);
 
         List<Category> categories = new ArrayList<>();
-        categories.add(new Category("Eда", "2500", user));
-        categories.add(new Category("Жилье", "8000", user));
-        categories.add(new Category("Машина", "5000", user));
+        categories.add(new Category("Eда", 2500, user));
+        categories.add(new Category("Жилье", 8000, user));
+        categories.add(new Category("Машина", 5000, user));
         user.setCategories(categories);
         userService.save(user);
 

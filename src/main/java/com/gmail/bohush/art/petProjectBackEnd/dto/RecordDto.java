@@ -9,11 +9,11 @@ import java.util.Date;
 public class RecordDto {
     private Long id;
     private String description;
-    private String sum;
+    private double sum;
     private Long categoryId;
     private String type;
     private String planningDate;
-    private Date created;
+    private long created;
     private String categoryName;
 
     public static Record toRecord(RecordDto recordDto) {
@@ -30,7 +30,7 @@ public class RecordDto {
         recordDto.setId(record.getId());
         recordDto.setDescription(record.getDescription());
         recordDto.setSum(record.getSum());
-        recordDto.setCreated(record.getCreated());
+        recordDto.setCreated(record.getCreated().getTime());
         recordDto.setCategoryName(record.getCategory().getName());
         recordDto.setType(record.getType().getName());
         return recordDto;
