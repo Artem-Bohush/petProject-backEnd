@@ -8,7 +8,9 @@ public interface RecordService {
 
     void save(Record record);
 
-//    void delete(Long id);
+    void delete(Long id);
+
+    Record findById(Long id);
 
 //    List<Record> getAll();
 //

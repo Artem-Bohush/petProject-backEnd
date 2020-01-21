@@ -31,6 +31,10 @@ public class Category {
             fetch = FetchType.LAZY, optional = false)
     private ChartData chartData;
 
+    @OneToOne(mappedBy = "category", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, optional = false)
+    private PlanningData planningData;
+
     public Category() {
     }
 

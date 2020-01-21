@@ -45,22 +45,8 @@ public class PetProjectBackEndApplication {
 				admin.setRoles(roles);
 
 				Category category1 = new Category("Eда", 2500, admin);
-				ChartData chartData1 = new ChartData();
-				chartData1.setCategory(category1);
-				chartData1.setLabel(category1.getName());
-				category1.setChartData(chartData1);
-
 				Category category2 = new Category("Жилье", 8000, admin);
-				ChartData chartData2 = new ChartData();
-				chartData2.setCategory(category2);
-				chartData2.setLabel(category2.getName());
-				category2.setChartData(chartData2);
-
 				Category category3 = new Category("Машина", 5000, admin);
-				ChartData chartData3 = new ChartData();
-				chartData3.setCategory(category3);
-				chartData3.setLabel(category3.getName());
-				category3.setChartData(chartData3);
 
 				List<Category> categories1 = new ArrayList<>();
 				categories1.add(category1);
@@ -73,7 +59,7 @@ public class PetProjectBackEndApplication {
 				user.setEmail("user@gmail.com");
 				user.setPassword("$2a$10$7nf7G945OnoXMjUWBqkG/eZ6pS/IX7VALdcj547XNC3KiVVBmvdaG");
 				user.setUsername("Alex");
-				user.setBalance(1188.55);
+				user.setBalance(10000);
 				user.setCreated(new Date());
 				user.setUpdated(new Date());
 				user.setStatus(Status.ACTIVE);
@@ -84,22 +70,8 @@ public class PetProjectBackEndApplication {
 
 
 				Category category4 = new Category("Eда", 2500, user);
-				ChartData chartData4 = new ChartData();
-				chartData4.setCategory(category4);
-				chartData4.setLabel(category4.getName());
-				category4.setChartData(chartData4);
-
 				Category category5 = new Category("Жилье", 8000, user);
-				ChartData chartData5 = new ChartData();
-				chartData5.setCategory(category5);
-				chartData5.setLabel(category5.getName());
-				category5.setChartData(chartData5);
-
 				Category category6 = new Category("Машина", 5000, user);
-				ChartData chartData6 = new ChartData();
-				chartData6.setCategory(category6);
-				chartData6.setLabel(category6.getName());
-				category6.setChartData(chartData6);
 
 				List<Category> categories2 = new ArrayList<>();
 				categories2.add(category4);

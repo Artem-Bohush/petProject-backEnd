@@ -6,5 +6,7 @@ public interface ChartDataService {
 
     void save(ChartData chartData);
 
+    void delete(ChartData chartData);
+
     ChartData findById(Long id);
 }

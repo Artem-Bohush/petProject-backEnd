@@ -1,7 +1,6 @@
 package com.gmail.bohush.art.petProjectBackEnd.dto;
 
 import com.gmail.bohush.art.petProjectBackEnd.entity.ChartData;
-import com.gmail.bohush.art.petProjectBackEnd.entity.Record;
 import lombok.Data;
 
 @Data

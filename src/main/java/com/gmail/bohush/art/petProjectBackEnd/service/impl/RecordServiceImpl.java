@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
+
 @Service
 @Slf4j
 public class RecordServiceImpl implements RecordService {
@@ -20,5 +22,16 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public void save(Record record) {
         recordRepository.save(record);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Record record = recordRepository.customFindById(id);
+        recordRepository.delete(record);
+    }
+
+    @Override
+    public Record findById(Long id) {
+        return recordRepository.customFindById(id);
     }
 }

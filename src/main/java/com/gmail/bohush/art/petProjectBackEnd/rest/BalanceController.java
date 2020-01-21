@@ -21,7 +21,7 @@ public class BalanceController {
         this.userService = userService;
     }
 
-    @GetMapping("/getCurrent")
+    @GetMapping("/getCurrentBalance")
     private ResponseEntity getCurrentBalance(@RequestHeader(value="authorization") String token) {
         User user = userService.getByToken(token);
         Map<Object, Object> response = new HashMap<>();

@@ -21,6 +21,11 @@ public class ChartDataServiceImpl implements ChartDataService {
     }
 
     @Override
+    public void delete(ChartData chartData) {
+        chartDataRepository.delete(chartData);
+    }
+
+    @Override
     public ChartData findById(Long id) {
         return chartDataRepository.customFindById(id);
     }

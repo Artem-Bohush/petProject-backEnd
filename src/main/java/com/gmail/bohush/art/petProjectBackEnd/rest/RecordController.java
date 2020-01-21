@@ -2,13 +2,9 @@ package com.gmail.bohush.art.petProjectBackEnd.rest;
 
 import com.gmail.bohush.art.petProjectBackEnd.dto.CategoryDto;
 import com.gmail.bohush.art.petProjectBackEnd.dto.RecordDto;
-import com.gmail.bohush.art.petProjectBackEnd.dto.UserDto;
 import com.gmail.bohush.art.petProjectBackEnd.entity.*;
 import com.gmail.bohush.art.petProjectBackEnd.service.*;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -24,15 +20,17 @@ public class RecordController {
     private final RecordService recordService;
     private final RecordTypeService recordTypeService;
     private final ChartDataService chartDataService;
+    private final PlanningDataService planningDataService;
 
 
     public RecordController(UserService userService, CategoryService categoryService, RecordService recordService,
-                            RecordTypeService recordTypeService, ChartDataService chartDataService) {
+                            RecordTypeService recordTypeService, ChartDataService chartDataService, PlanningDataService planningDataService) {
         this.userService = userService;
         this.categoryService = categoryService;
         this.recordService = recordService;
         this.recordTypeService = recordTypeService;
         this.chartDataService = chartDataService;
+        this.planningDataService = planningDataService;
     }
 
     @GetMapping("/getCategories")
@@ -71,6 +69,17 @@ public class RecordController {
         } else if (record.getType().getName().equals("income")) {
             user.setBalance(user.getBalance() + record.getSum());
             userService.save(user);
+        } else {
+            PlanningData planningData = category.getPlanningData();
+            if (planningData != null) {
+                planningData.setTotalOutcome(planningData.getTotalOutcome() + record.getSum());
+            } else {
+                planningData = new PlanningData();
+                planningData.setCategoryName(record.getCategory().getName());
+                planningData.setTotalOutcome(record.getSum());
+                planningData.setCategory(category);
+            }
+            planningDataService.save(planningData);
         }
         return HttpStatus.OK;
     }
@@ -97,6 +106,20 @@ public class RecordController {
 
     @DeleteMapping("/deleteCategory")
     public HttpStatus deleteCategory(@RequestHeader(value="authorization") String token, @RequestBody CategoryDto categoryDto) {
+        User user = userService.getByToken(token);
+        Category category = categoryService.findById(categoryDto.getId());
+        List<Record> records = category.getRecords();
+        double totalIncome = 0;
+        double totalOutcome = 0;
+        for (Record record: records) {
+            if (record.getType().getName().equals("income")) {
+                totalIncome += record.getSum();
+            } else {
+                totalOutcome += record.getSum();
+            }
+        }
+        user.setBalance(user.getBalance() - totalIncome + totalOutcome);
+        userService.save(user);
         categoryService.delete(categoryDto.getId());
         return HttpStatus.OK;
     }
